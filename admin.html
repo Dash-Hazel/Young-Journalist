@@ -12,6 +12,7 @@
         body { padding-top: 100px; }
         .admin-section { margin-bottom: 60px; }
         .admin-section h2 { border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 30px; }
+        .image-input-group { margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -54,56 +55,41 @@
                         <option value="culture">Култура</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="articleImage">URL на снимка (по избор):</label>
-                    <input type="url" id="articleImage" placeholder="https://example.com/image.jpg">
-                    <small>Въведете линк към снимка (от Google Drive, ImgBB, Unsplash и др.)</small>
-                </div>
-
-                 <div class="form-group">
-                    <label for="articleImage">URL на снимка (по избор):</label>
-                    <input type="url" id="articleImage" placeholder="https://example.com/image.jpg">
-                    <small>Въведете линк към снимка (от Google Drive, ImgBB, Unsplash и др.)</small>
-                </div>
-                <div class="form-group">
-                    <label for="articleImage">URL на снимка (по избор):</label>
-                    <input type="url" id="articleImage" placeholder="https://example.com/image.jpg">
-                    <small>Въведете линк към снимка (от Google Drive, ImgBB, Unsplash и др.)</small>
-                </div>
-                <div class="form-group">
-                    <label for="articleImage">URL на снимка (по избор):</label>
-                    <input type="url" id="articleImage" placeholder="https://example.com/image.jpg">
-                    <small>Въведете линк към снимка (от Google Drive, ImgBB, Unsplash и др.)</small>
-                </div>
-                <div class="form-group">
-                    <label for="articleImage">URL на снимка (по избор):</label>
-                    <input type="url" id="articleImage" placeholder="https://example.com/image.jpg">
-                    <small>Въведете линк към снимка (от Google Drive, ImgBB, Unsplash и др.)</small>
-                </div>
-                <div class="form-group">
-                    <label for="articleImage">URL на снимка (по избор):</label>
-                    <input type="url" id="articleImage" placeholder="https://example.com/image.jpg">
-                    <small>Въведете линк към снимка (от Google Drive, ImgBB, Unsplash и др.)</small>
-                </div>
-                <div class="form-group">
-                    <label for="articleImage">URL на снимка (по избор):</label>
-                    <input type="url" id="articleImage" placeholder="https://example.com/image.jpg">
-                    <small>Въведете линк към снимка (от Google Drive, ImgBB, Unsplash и др.)</small>
-                </div>
-                <div class="form-group">
-                    <label for="articleImage">URL на снимка (по избор):</label>
-                    <input type="url" id="articleImage" placeholder="https://example.com/image.jpg">
-                    <small>Въведете линк към снимка (от Google Drive, ImgBB, Unsplash и др.)</small>
-                </div>
-                <div class="form-group">
-                    <label for="articleImage">URL на снимка (по избор):</label>
-                    <input type="url" id="articleImage" placeholder="https://example.com/image.jpg">
-                    <small>Въведете линк към снимка (от Google Drive, ImgBB, Unsplash и др.)</small>
-                </div>
-                <div class="form-group">
-                    <label for="articleImage">URL на снимка (по избор):</label>
-                    <input type="url" id="articleImage" placeholder="https://example.com/image.jpg">
-                    <small>Въведете линк към снимка (от Google Drive, ImgBB, Unsplash и др.)</small>
+                
+                <!-- FIXED: Multiple image inputs with unique IDs -->
+                <div class="image-input-group">
+                    <h4>Снимки за статията (до 6 снимки)</h4>
+                    
+                    <div class="form-group">
+                        <label for="articleImage1">Основна снимка:</label>
+                        <input type="url" id="articleImage1" placeholder="https://example.com/image1.jpg">
+                        <small>URL на основна снимка</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="articleImage2">Допълнителна снимка 2:</label>
+                        <input type="url" id="articleImage2" placeholder="https://example.com/image2.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="articleImage3">Допълнителна снимка 3:</label>
+                        <input type="url" id="articleImage3" placeholder="https://example.com/image3.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="articleImage4">Допълнителна снимка 4:</label>
+                        <input type="url" id="articleImage4" placeholder="https://example.com/image4.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="articleImage5">Допълнителна снимка 5:</label>
+                        <input type="url" id="articleImage5" placeholder="https://example.com/image5.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="articleImage6">Допълнителна снимка 6:</label>
+                        <input type="url" id="articleImage6" placeholder="https://example.com/image6.jpg">
+                    </div>
                 </div>
                 
                 <button type="submit" class="btn">Публикувай статия</button>
@@ -150,7 +136,7 @@
 
     <!-- Load JavaScript files -->
     <script>
-        // Article form handler
+        // Article form handler - UPDATED FOR MULTIPLE IMAGES
         document.getElementById('articleForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -166,8 +152,21 @@
                 author: document.getElementById('author').value,
                 category: document.getElementById('category').value,
                 date: new Date().toISOString(),
-                imageUrl: document.getElementById('articleImage').value || ''
+                // FIXED: Save multiple image fields
+                imageUrl: document.getElementById('articleImage1').value || '',
+                imageUrl2: document.getElementById('articleImage2').value || '',
+                imageUrl3: document.getElementById('articleImage3').value || '',
+                imageUrl4: document.getElementById('articleImage4').value || '',
+                imageUrl5: document.getElementById('articleImage5').value || '',
+                imageUrl6: document.getElementById('articleImage6').value || ''
             };
+
+            // Remove empty image fields to save space
+            Object.keys(articleData).forEach(key => {
+                if (key.startsWith('imageUrl') && articleData[key] === '') {
+                    delete articleData[key];
+                }
+            });
 
             db.ref('articles').push(articleData)
                 .then(() => {
@@ -186,7 +185,7 @@
                 });
         });
 
-        // Calendar form handler
+        // Calendar form handler (unchanged)
         document.getElementById('eventForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -240,7 +239,7 @@
                 });
         });
 
-        // Load events function
+        // Load events function (unchanged)
         function loadEvents() {
             db.ref('events').orderByChild('timestamp').once('value')
                 .then((snapshot) => {
@@ -318,5 +317,4 @@
         document.addEventListener('DOMContentLoaded', loadEvents);
     </script>
 </body>
-
 </html>
