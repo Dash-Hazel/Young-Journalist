@@ -1,3 +1,5 @@
+
+
 // Article page functionality
 document.addEventListener('DOMContentLoaded', function() {
     // Get article ID from URL
@@ -39,7 +41,37 @@ function loadArticle(articleId, categoryNames) {
         });
 }
 
-// SINGLE displayArticle function (remove the duplicate)
+function displayArticle(article, categoryNames) {
+    // Update page title
+    document.title = `${article.title} - Млад Журналист`;
+    
+    const categoryName = categoryNames[article.category] || article.category;
+    const formattedDate = new Date(article.date).toLocaleDateString('bg-BG', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    
+    // SAFE image checking - handles missing imageUrl field
+    let imageHTML = generateImageHTML(article);
+   
+    
+    document.getElementById('articleContent').innerHTML = `
+        <div class="article-header">
+            <h1 class="article-title">${article.title}</h1>
+            <div class="article-meta">
+                <span>✍️ ${article.author}</span>
+                <span>📅 ${formattedDate}</span>
+                <span>🏷️ ${categoryName}</span>
+            </div>
+        </div>
+        ${imageHTML}
+        <div class="article-body">
+            ${formatArticleContent(article.content)}
+        </div>
+    `;
+}
+
 function displayArticle(article, categoryNames) {
     // Update page title
     document.title = `${article.title} - Млад Журналист`;
@@ -58,16 +90,16 @@ function displayArticle(article, categoryNames) {
         formattedDate = 'Невалидна дата';
     }
     
-    // Handle multiple images
+    // FIXED: Handle multiple images
     let imageHTML = generateImageHTML(article);
     
     document.getElementById('articleContent').innerHTML = `
         <div class="article-header">
-            <h1 class="article-title">${article.title}</h1>
+            <h1 class="article-title">${escapeHtml(article.title)}</h1>
             <div class="article-meta">
-                <span>✍️ ${article.author}</span>
+                <span>✍️ ${escapeHtml(article.author)}</span>
                 <span>📅 ${formattedDate}</span>
-                <span>🏷️ ${categoryName}</span>
+                <span>🏷️ ${escapeHtml(categoryName)}</span>
             </div>
         </div>
         ${imageHTML}
@@ -112,14 +144,7 @@ function showError(message) {
     document.getElementById('articleContent').innerHTML = 
         `<div class="error-message">${message}</div>`;
 }
+        
 
-// Add XSS protection function (optional but recommended)
-function escapeHtml(unsafe) {
-    if (!unsafe) return '';
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+
+
