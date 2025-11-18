@@ -39,53 +39,27 @@ function loadArticle(articleId, categoryNames) {
         });
 }
 
+// SINGLE displayArticle function (remove the duplicate)
 function displayArticle(article, categoryNames) {
     // Update page title
     document.title = `${article.title} - Млад Журналист`;
     
     const categoryName = categoryNames[article.category] || article.category;
-    const formattedDate = new Date(article.date).toLocaleDateString('bg-BG', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
     
-    // SAFE image checking - handles missing imageUrl field
-    let imageHTML = '';
-    if (article.imageUrl && article.imageUrl.trim() !== '') {
-        imageHTML = `
-            <div class="article-image">
-                <img src="${article.imageUrl}" alt="${article.title}" />
-            </div>
-            <div class="article-image">
-                <img src="${article.imageUrl}" alt="${article.title}" />
-            </div>
-            <div class="article-image">
-                <img src="${article.imageUrl}" alt="${article.title}" />
-            </div>
-            <div class="article-image">
-                <img src="${article.imageUrl}" alt="${article.title}" />
-            </div>
-            <div class="article-image">
-                <img src="${article.imageUrl}" alt="${article.title}" />
-            </div>
-            <div class="article-image">
-                <img src="${article.imageUrl}" alt="${article.title}" />
-            </div>
-            <div class="article-image">
-                <img src="${article.imageUrl}" alt="${article.title}" />
-            </div>
-            <div class="article-image">
-                <img src="${article.imageUrl}" alt="${article.title}" />
-            </div>
-            <div class="article-image">
-                <img src="${article.imageUrl}" alt="${article.title}" />
-            </div>
-            <div class="article-image">
-                <img src="${article.imageUrl}" alt="${article.title}" />
-            </div>
-        `;
+    // Safe date formatting with error handling
+    let formattedDate;
+    try {
+        formattedDate = new Date(article.date).toLocaleDateString('bg-BG', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } catch (error) {
+        formattedDate = 'Невалидна дата';
     }
+    
+    // Handle multiple images
+    let imageHTML = generateImageHTML(article);
     
     document.getElementById('articleContent').innerHTML = `
         <div class="article-header">
@@ -103,6 +77,27 @@ function displayArticle(article, categoryNames) {
     `;
 }
 
+// NEW FUNCTION: Generate HTML for all available images
+function generateImageHTML(article) {
+    const imageFields = [
+        'imageUrl', 'imageUrl2', 'imageUrl3', 'imageUrl4', 'imageUrl5', 'imageUrl6'
+    ];
+    
+    let imagesHTML = '';
+    
+    imageFields.forEach(field => {
+        if (article[field] && article[field].trim() !== '') {
+            imagesHTML += `
+                <div class="article-image">
+                    <img src="${article[field]}" alt="${article.title}" />
+                </div>
+            `;
+        }
+    });
+    
+    return imagesHTML;
+}
+
 function formatArticleContent(content) {
     if (!content) return '<p>Съдържанието не е налично.</p>';
     
@@ -116,5 +111,15 @@ function formatArticleContent(content) {
 function showError(message) {
     document.getElementById('articleContent').innerHTML = 
         `<div class="error-message">${message}</div>`;
+}
 
+// Add XSS protection function (optional but recommended)
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
