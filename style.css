@@ -1306,5 +1306,46 @@ body:has(.admin-container) {
     display: inline-block;
 }
 
+.article-body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 17px;
+    line-height: 1.8; /* По-голямо разстояние между редовете като в Word */
+    color: #333;
+    text-align: left;
+}
+
+.article-body p {
+    margin-bottom: 1.2em; /* Нормално разстояние между параграфите */
+    text-indent: 0; /* БЕЗ отстъп на първия ред */
+    word-spacing: normal;
+    letter-spacing: normal;
+    text-align: left;
+}
+
+.article-body p:first-child {
+    margin-top: 0;
+}
+
+.article-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* Подобрения за по-добро четене */
+.article-body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    max-width: 100%;
+}
+
+/* Още по-добро разстояние за по-голям текст */
+@media (min-width: 768px) {
+    .article-body {
+        font-size: 18px;
+        line-height: 1.8;
+    }
+}
+
+
 
 
