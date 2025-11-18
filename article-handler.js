@@ -57,6 +57,33 @@ function displayArticle(article, categoryNames) {
             <div class="article-image">
                 <img src="${article.imageUrl}" alt="${article.title}" />
             </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
         `;
     }
     
@@ -89,4 +116,5 @@ function formatArticleContent(content) {
 function showError(message) {
     document.getElementById('articleContent').innerHTML = 
         `<div class="error-message">${message}</div>`;
+
 }
