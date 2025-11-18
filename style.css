@@ -1194,3 +1194,50 @@ body:has(.admin-container) {
 .list-view .event-item {
     margin-bottom: 20px;
 }
+
+.article-body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.article-body p {
+    margin-bottom: 1.2em;
+    text-align: justify;
+    word-spacing: normal;
+    letter-spacing: normal;
+}
+
+.article-body p:first-child {
+    margin-top: 0;
+}
+
+.article-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* Fix excessive spacing */
+.article-body * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Ensure proper paragraph spacing without huge gaps */
+.article-body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optional: Add some modern font options */
+.article-body {
+    font-family: 'Georgia', 'Cambria', 'Times New Roman', serif;
+}
+
+/* If you want a more modern sans-serif font */
+/* .article-body {
+    font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+} */
+
