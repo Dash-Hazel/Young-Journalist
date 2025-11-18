@@ -1346,6 +1346,51 @@ body:has(.admin-container) {
     }
 }
 
+.article-body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 16px;
+    line-height: 1.2; /* Много компактно - малко разстояние между редовете */
+    color: #333;
+    text-align: left;
+}
+
+.article-body p {
+    margin-bottom: 0.5em; /* Много малко разстояние между параграфите */
+    text-indent: 0; /* Без отстъп */
+    word-spacing: normal;
+    letter-spacing: normal;
+    text-align: left;
+}
+
+.article-body p:first-child {
+    margin-top: 0;
+}
+
+.article-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* Допълнително компактно */
+.article-body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    max-width: 100%;
+}
+
+/* Още по-компактно за по-добър "квадратен" вид */
+@media (max-width: 768px) {
+    .article-body {
+        font-size: 15px;
+        line-height: 1.2;
+    }
+    
+    .article-body p {
+        margin-bottom: 0.4em;
+    }
+}
+
+
 
 
 
