@@ -1251,5 +1251,60 @@ body:has(.admin-container) {
     height: auto;
     border-radius: 8px;
 }
+.article-body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 17px;
+    line-height: 1.4; /* По-малко разстояние между редовете */
+    color: #333;
+    text-align: left; /* Ляво подравняване вместо justify */
+}
+
+.article-body p {
+    margin-bottom: 0.8em; /* По-малко разстояние между параграфите */
+    text-indent: 1.5em; /* Отстъп на първия ред като в Word */
+    word-spacing: normal;
+    letter-spacing: normal;
+    text-align: left;
+}
+
+.article-body p:first-child {
+    margin-top: 0;
+    text-indent: 0; /* Без отстъп за първия параграф */
+}
+
+.article-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* Подобрения за по-добро четене */
+.article-body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    max-width: 100%;
+}
+
+/* По-компактни заглавия */
+.article-header {
+    margin-bottom: 1.5rem;
+}
+
+.article-title {
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 0.8rem;
+}
+
+.article-meta {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    color: #666;
+}
+
+.article-meta span {
+    margin-right: 1.5rem;
+    display: inline-block;
+}
+
 
 
