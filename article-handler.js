@@ -1,5 +1,3 @@
-
-
 // Article page functionality
 document.addEventListener('DOMContentLoaded', function() {
     // Get article ID from URL
@@ -53,7 +51,41 @@ function displayArticle(article, categoryNames) {
     });
     
     // SAFE image checking - handles missing imageUrl field
-    let imageHTML = generateImageHTML(article);
+    let imageHTML = '';
+    if (article.imageUrl && article.imageUrl.trim() !== '') {
+        imageHTML = `
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+            <div class="article-image">
+                <img src="${article.imageUrl}" alt="${article.title}" />
+            </div>
+        `;
+    }
    
     
     document.getElementById('articleContent').innerHTML = `
@@ -72,64 +104,6 @@ function displayArticle(article, categoryNames) {
     `;
 }
 
-function displayArticle(article, categoryNames) {
-    // Update page title
-    document.title = `${article.title} - Млад Журналист`;
-    
-    const categoryName = categoryNames[article.category] || article.category;
-    
-    // Safe date formatting with error handling
-    let formattedDate;
-    try {
-        formattedDate = new Date(article.date).toLocaleDateString('bg-BG', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    } catch (error) {
-        formattedDate = 'Невалидна дата';
-    }
-    
-    // FIXED: Handle multiple images
-    let imageHTML = generateImageHTML(article);
-    
-    document.getElementById('articleContent').innerHTML = `
-        <div class="article-header">
-            <h1 class="article-title">${escapeHtml(article.title)}</h1>
-            <div class="article-meta">
-                <span>✍️ ${escapeHtml(article.author)}</span>
-                <span>📅 ${formattedDate}</span>
-                <span>🏷️ ${escapeHtml(categoryName)}</span>
-            </div>
-        </div>
-        ${imageHTML}
-        <div class="article-body">
-            ${formatArticleContent(article.content)}
-        </div>
-    `;
-}
-
-// NEW FUNCTION: Generate HTML for all available images
-function generateImageHTML(article) {
-    const imageFields = [
-        'imageUrl', 'imageUrl2', 'imageUrl3', 'imageUrl4', 'imageUrl5', 'imageUrl6'
-    ];
-    
-    let imagesHTML = '';
-    
-    imageFields.forEach(field => {
-        if (article[field] && article[field].trim() !== '') {
-            imagesHTML += `
-                <div class="article-image">
-                    <img src="${article[field]}" alt="${article.title}" />
-                </div>
-            `;
-        }
-    });
-    
-    return imagesHTML;
-}
-
 function formatArticleContent(content) {
     if (!content) return '<p>Съдържанието не е налично.</p>';
     
@@ -144,7 +118,3 @@ function showError(message) {
     document.getElementById('articleContent').innerHTML = 
         `<div class="error-message">${message}</div>`;
 }
-        
-
-
-
