@@ -278,6 +278,16 @@
 <section id="publications" class="publications">
     <div class="container">
         <h2>Нашите публикации</h2>
+
+
+ <!--Search bar addition ---- NEW, ADD TO GIT-->
+        <div class="search-container">
+            <input type="text" id="articleSearch" placeholder="Търсене в заглавията на статиите..." class="search-input">
+        <button id="clearSearch" class="clear-search-btn">✕</button>
+        </div>
+        
+        <div id="searchResultsInfo" class="search-results-info"></div>
+        
         <div id="articlesContainer" class="publications-grid">
             <!-- Articles will load here automatically from Firebase -->
         </div>
@@ -557,6 +567,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
 
 </body>
 </html>
+
 
 
 
