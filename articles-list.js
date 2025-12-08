@@ -551,6 +551,7 @@ ${fullArticles.map((article, index) =>
 8. Професионален дизайн като истински вестник
 9. С форматиране като в прогрмата Word
 10. Ако има повече от 3 статии направи нова страница със същото форматиране
+11. Използвай готов Canva template за вестника
 
 Използвай този HTML шаблон, но го направи ПЪЛЕН с реалното съдържание на статиите:
 <div class="ai-newspaper">
@@ -849,3 +850,4 @@ document.addEventListener('DOMContentLoaded', function() {
         setupNewspaperControls();
     }, 100);
 });
+
