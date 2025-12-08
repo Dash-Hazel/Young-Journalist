@@ -29,3 +29,8 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 // Make them globally available (optional)
 window.auth = auth;
 window.db = db;
+
+
+// Add this at the bottom of firebase-config.js
+const GEMINI_API_KEY = 'AIzaSyCjG8z3vbhFOM9hlqfUf2Ug7H4dGwY1sgI'; // Replace with your key
+window.GEMINI_API_KEY = GEMINI_API_KEY;
