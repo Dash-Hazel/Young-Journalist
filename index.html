@@ -1,4 +1,3 @@
-
 <!----
 <!DOCTYPE html>
 <html lang="bg">
@@ -193,12 +192,21 @@
 <html lang="bg">
 <html lang="bg">
 <head>
+   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Гласът на коридора - Училищен клуб по журналистика</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Add Firebase SDK -->
     
+    <!-- Add Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    
+    <!-- Load articles-list.js AFTER Firebase -->
+    <script src="articles-list.js" defer></script>
+</head>
 </head>
 <body>
     <!-- Header Section -->
@@ -222,8 +230,7 @@
         </div>
     </header>
 
-    <!-- In the head section -->
-<script src="articles-list.js" defer></script>
+
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -278,57 +285,59 @@
     </section>
 
     <!-- Publications Section -->
+<!-- Add this right after your search results info in the publications section -->
 <section id="publications" class="publications">
     <div class="container">
         <h2>Нашите публикации</h2>
-
-
-
-        <!--Search bar addition ---- NEW, ADD TO GIT-->
+        
         <div class="search-container">
             <input type="text" id="articleSearch" placeholder="Търсене в заглавията на статиите..." class="search-input">
-        <button id="clearSearch" class="clear-search-btn">✕</button>
+            <button id="clearSearch" class="clear-search-btn">✕</button>
         </div>
         
         <div id="searchResultsInfo" class="search-results-info"></div>
-
-
-
-
-
-        <div id="articlesContainer" class="publications-grid">
+        
+        <!-- Newspaper Controls -->
+        <div id="newspaperControls" class="newspaper-controls" style="display: none;">
+            <div class="selected-count">
+                <span id="selectedCount">0</span> статии избрани
+            </div>
+            <button id="createNewspaperBtn" class="btn btn-primary">
+                🗞️ Създай вестник
+            </button>
+            <button id="clearSelectionBtn" class="btn btn-secondary">
+                ✕ Изчисти избора
+            </button>
+        </div>
+        
+        <div id="articlesContainer" class="articles-grid">
             <!-- Articles will load here automatically from Firebase -->
         </div>
     </div>
 </section>
 
-<script>
-// Load and display articles
-function loadArticles() {
-    db.ref('articles').orderByChild('date').limitToLast(3).once('value')
-        .then((snapshot) => {
-            const articlesContainer = document.getElementById('articlesContainer');
-            articlesContainer.innerHTML = '';
-            
-            snapshot.forEach((childSnapshot) => {
-                const article = childSnapshot.val();
-                const articleId = childSnapshot.key;
-                
-                const articleHTML = `
-                    <div class="publication-card">
-                        <h3>${article.title}</h3>
-                        <p>${article.excerpt}</p>
-                        <p><small>Автор: ${article.author} | ${new Date(article.date).toLocaleDateString('bg-BG')}</small></p>
-                        <a href="article.html?id=${articleId}" class="read-more">Прочети повече</a>
-                    </div>
-                `;
-                articlesContainer.innerHTML += articleHTML;
-            });
-        });
-}
+<!-- Newspaper Modal (hidden by default) -->
+<div id="newspaperModal" class="newspaper-modal">
+    <div class="newspaper-modal-content">
+        <div class="newspaper-modal-header">
+            <h2>🗞️ Вашият цифров вестник</h2>
+            <button id="closeNewspaperBtn" class="close-btn">✕</button>
+        </div>
+        <div class="newspaper-modal-body">
+            <div id="newspaperLoading" class="newspaper-loading">
+                <div class="loading-spinner"></div>
+                <p>Създаване на вестника... Може да отнеме няколко секунди.</p>
+            </div>
+            <div id="newspaperContent" class="newspaper-content" style="display: none;"></div>
+        </div>
+        <div class="newspaper-modal-footer">
+            <button id="downloadNewspaperBtn" class="btn btn-primary">📥 Изтегли PDF</button>
+            <button id="shareNewspaperBtn" class="btn btn-secondary">📤 Сподели</button>
+            <button id="printNewspaperBtn" class="btn">🖨️ Принтирай</button>
+        </div>
+    </div>
+</div>
 
-document.addEventListener('DOMContentLoaded', loadArticles);
-</script>
 
  <!-- Team Section -->
 <section id="team" class="team">
@@ -337,7 +346,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
         
         <!-- Extra large square with enhanced shadowing -->
         <div style="display: flex; justify-content: center; margin: 60px 0;">
-            <img src="photos/team-photo.jpg" alt="Нашият екип" 
+            <img src="team-photo.jpg" alt="Нашият екип" 
                  style="width: 450px; height: 450px; border-radius: 25px; object-fit: cover; border: 6px solid #ffffff; 
                         box-shadow: 0 15px 30px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.1);
                         filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));">
@@ -346,7 +355,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
         <div class="team-grid">
             <div class="team-member">
                 <div class="member-photo">
-                    <img src="photos/Kameliq-Aleksandrova.jpg" alt="Ръководител" 
+                    <img src="Photos/Kameliq-Aleksandrova.jpg" alt="Ръководител" 
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
                 <h3>Ръководител</h3>
@@ -355,7 +364,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
             
             <div class="team-member">
                 <div class="member-photo">
-                    <img src="photos/Georgi-Jerev.jpg" alt="Ръководител" 
+                    <img src="Photos/Georgi-Jerev.jpg" alt="Ръководител" 
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
                 <h3>Фотограф</h3>
@@ -368,7 +377,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
             </div>
             <div class="team-member">
                 <div class="member-photo">
-                    <img src="photos/Yoana-Zlaatinova.jpg" alt="Ръководител" 
+                    <img src="Photos/Yoana-Zlaatinova.jpg" alt="Ръководител" 
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
                 <h3>Редактор</h3>
@@ -377,7 +386,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
 
             <div class="team-member">
                 <div class="member-photo">
-                    <img src="photos/Rebecca-Mehandjieva.jpg" alt="Ръководител" 
+                    <img src="Photos/Rebecca-Mehandjieva.jpg" alt="Ръководител" 
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
                 <h3>Репортер</h3>
@@ -385,7 +394,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
         </div>
         <div class="team-member">
                 <div class="member-photo">
-                    <img src="photos/Deyvis-Gushterov.jpg" alt="Ръководител" 
+                    <img src="Photos/Deyvis-Gushterov.jpg" alt="Ръководител" 
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
                 <h3>Техническа поддръжка</h3>
@@ -394,7 +403,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
 
         <div class="team-member">
                 <div class="member-photo">
-                    <img src="photos/Temenujka-Georgieva.jpg" alt="Ръководител" 
+                    <img src="Photos/Temenujka-Georgieva.jpg" alt="Ръководител" 
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
                 <h3>Репортер</h3>
@@ -402,7 +411,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
         </div>
         <div class="team-member">
                 <div class="member-photo">
-                    <img src="photos/Gergana-Ilieva.jpg" alt="Ръководител" 
+                    <img src="Photos/Gergana-Ilieva.jpg" alt="Ръководител" 
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
                 <h3>Репортер</h3>
@@ -410,7 +419,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
         </div>
         <div class="team-member">
                 <div class="member-photo">
-                    <img src="photos/Anna-Malik.jpg" alt="Ръководител" 
+                    <img src="Photos/Anna-Malik.jpg" alt="Ръководител" 
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
                 <h3>Репортер</h3>
@@ -418,7 +427,7 @@ document.addEventListener('DOMContentLoaded', loadArticles);
         </div>
         <div class="team-member">
                 <div class="member-photo">
-                    <img src="photos/viber_image_2025-11-19_17-50-47-904.jpg" alt="Ръководител" 
+                    <img src="Photos/viber_image_2025-11-19_17-50-47-904.jpg" alt="Ръководител" 
                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
                 <h3>Репортер</h3>
@@ -543,67 +552,33 @@ document.addEventListener('DOMContentLoaded', loadArticles);
 <script src="form-handler.js"></script>
 <script src="public-calendar.js"></script>  <!-- Calendar should load last -->
 
-    <script>
-// Load and display articles from Firebase
-function loadArticles() {
-    if (typeof db === 'undefined') {
-        console.error('Firebase not initialized');
-        document.getElementById('articlesContainer').innerHTML = 
-            '<p>Грешка при зареждане на статиите.</p>';
-        return;
+    
+<script>
+// Debug: Check if articles-list.js loaded
+console.log('Debug: articles-list.js should have loaded');
+console.log('Checkbox function exists?', typeof toggleArticleSelection);
+
+// Force load articles with debug
+setTimeout(function() {
+    console.log('Checking articles container...');
+    const container = document.getElementById('articlesContainer');
+    console.log('Container:', container);A
+    console.log('Container HTML:', container.innerHTML.substring(0, 200));
+    
+    // Look for checkboxes
+    const checkboxes = document.querySelectorAll('.article-select-checkbox');
+    console.log('Found checkboxes:', checkboxes.length);
+    
+    if (checkboxes.length === 0) {
+        console.error('NO CHECKBOXES FOUND!');
+        console.log('Possible issues:');
+        console.log('1. articles-list.js not loaded');
+        console.log('2. displayArticles not called');
+        console.log('3. Checkbox HTML not being added');
     }
-
-    db.ref('articles').orderByChild('date').limitToLast(6).once('value')
-        .then((snapshot) => {
-            const articlesContainer = document.getElementById('articlesContainer');
-            articlesContainer.innerHTML = '';
-            
-            if (!snapshot.exists()) {
-                articlesContainer.innerHTML = `
-                    <div class="publication-card">
-                        <h3>Очаквайте първите ни публикации!</h3>
-                        <p>В момента подготвяме първия брой на училищния вестник. Скоро ще имате достъп до всички наши статии тук.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            snapshot.forEach((childSnapshot) => {
-                const article = childSnapshot.val();
-                const articleId = childSnapshot.key;
-                
-                const articleHTML = `
-                    <div class="publication-card">
-                        <h3>${article.title}</h3>
-                        <p>${article.excerpt}</p>
-                        <p><small>Автор: ${article.author} | ${new Date(article.date).toLocaleDateString('bg-BG')}</small></p>
-                        <a href="article.html?id=${articleId}" class="read-more">Прочети повече</a>
-                    </div>
-                `;
-                articlesContainer.innerHTML += articleHTML;
-            });
-        })
-        .catch((error) => {
-            console.error('Error loading articles:', error);
-            document.getElementById('articlesContainer').innerHTML = 
-                '<p>Грешка при зареждане на статиите.</p>';
-        });
-}
-
-// Load articles when page loads
-document.addEventListener('DOMContentLoaded', loadArticles);
+}, 2000);
 </script>
-
-
-
 
 </body>
 
 </html>
-
-
-
-
-
-
-
