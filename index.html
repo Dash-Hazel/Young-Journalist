@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusHub</title>
+    <title>Гласът на коридора - Училищен клуб по журналистика</title>
     <link rel="stylesheet" href="style.css">
     
     <!-- АНИМАЦИИ - Добавени CSS стилове -->
@@ -120,10 +120,14 @@
     </style>
     
     <!-- Firebase SDK -->
+  <!-- Firebase and config first -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="firebase-config.js"></script>
+
+    <script src="form-handler.js"></script>
+    <script src="public-calendar.js"></script>
     
     <!-- Load articles-list.js AFTER Firebase -->
     <script src="articles-list.js" defer></script>
@@ -133,7 +137,7 @@
     <header>
         <div class="container">
             <div class="logo">
-                <h1>CampuHub</h1>
+                <h1>Гласът на коридора</h1>
                 <p>Училищен клуб по журналистика</p>
             </div>
             <nav>
@@ -154,7 +158,7 @@
     <section id="home" class="hero">
         <div class="container">
             <div class="hero-content scroll-animate visible">
-                <h2>Добре дошли в CampusHub!</h2>
+                <h2>Добре дошли в клуба "Млад Журналист"!</h2>
                 <p>Място, където младите таланти откриват силата на словото и изкуството на разказването.</p>
                 <a href="#contact" class="btn">Присъедини се</a>
             </div>
@@ -167,7 +171,7 @@
             <h2 class="scroll-animate">За клуба</h2>
             <div class="about-content">
                 <div class="about-text scroll-animate delay-1">
-                    <p>CampusHub е място за ученици, които се интересуват от писане, репортажи, фотография и медии. Ние се стремим да развием уменията за критично мислене, изследователска работа и ефективна комуникация.</p>
+                    <p>Клуб "Млад Журналист" е място за ученици, които се интересуват от писане, репортажи, фотография и медии. Ние се стремим да развием уменията за критично мислене, изследователска работа и ефективна комуникация.</p>
                     <p>Чрез нашите дейности, членовете на клуба научават как да създават качествени журналистически материали, да интервюират и да представят информация по интересен и достъпен начин.</p>
                 </div>
                 <div class="about-image scroll-animate delay-2">
@@ -454,12 +458,12 @@
         </div>
     </section>
 
-    <!-- Calendar Section -->
-    <section id="calendar" class="calendar scroll-animate">
+       <!-- Calendar Section -->
+    <section id="calendar" class="calendar">
         <div class="container">
-            <h2>Предстоящи събития</h2>
+            <h2 class="scroll-animate">📅 Предстоящи събития</h2>
             <div id="publicEventsList" class="public-events-list">
-                <!-- Events will be loaded here -->
+                <!-- Събитията ще се заредят тук от JavaScript -->
             </div>
         </div>
     </section>
@@ -471,14 +475,7 @@
         </div>
     </footer>
 
-    <!-- Firebase and config first -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="firebase-config.js"></script>
-
-    <script src="form-handler.js"></script>
-    <script src="public-calendar.js"></script>
+  
     
     <!-- АНИМАЦИИ - JavaScript код -->
     <script>
@@ -676,7 +673,4 @@ window.addEventListener('load', function() {
 
 </body>
 </html>
-
-
-
 
