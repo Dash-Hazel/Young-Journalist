@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Забавни Рубрики - Гласът на коридора</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="rubrics-public.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    
+    <style>
+        /* Inline styles for quick start */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Гласът на коридора</h1>
+                <p>Училищен клуб по журналистика</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Начало</a></li>
+                    <li><a href="index.html#publications">📰 Статии</a></li>
+                    <li><a href="rubrics-public.html" class="active">🎪 Забавни рубрики</a></li>
+                    <li><a href="index.html#team">Екип</a></li>
+                    <li><a href="index.html#contact">Контакти</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Rubrics Hero -->
+    <section class="rubrics-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>🎪 Забавни Рубрики</h1>
+                <p>Леко и забавно съдържание от нашия клуб. Тук ще намерите рецепти, интересни факти и шеги!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rubrics Navigation -->
+    <section class="rubrics-nav-section">
+        <div class="container">
+            <div class="rubrics-tabs" id="rubricsTabs">
+                <button class="rubric-tab active" data-type="all">📚 Всички</button>
+                <button class="rubric-tab" data-type="recipes">🍽️ Рецепти</button>
+                <button class="rubric-tab" data-type="interesting">🔍 Интересно</button>
+                <button class="rubric-tab" data-type="jokes">😂 Шеги</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rubrics Content -->
+    <section class="rubrics-content-section">
+        <div class="container">
+            <div id="rubricsContent">
+                <!-- Content will be loaded here by JavaScript -->
+                <div class="loading-rubrics">
+                    <div class="spinner"></div>
+                    <p>Зареждане на забавното съдържание...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Клуб "Млад Журналист". Всички права запазени.</p>
+            <a href="index.html" class="back-to-home">← Обратно към статиите</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="rubrics-database.js"></script>
+    <script src="rubrics-public.js"></script>
+    
+    <script>
+        // Simple scroll animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // Observe rubric cards after they load
+            setTimeout(() => {
+                document.querySelectorAll('.rubric-card').forEach(card => {
+                    observer.observe(card);
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

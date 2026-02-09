@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рубрики - Гласът на коридора</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="rubric.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    
+    <style>
+        /* Additional styles for rubric page */
+        .back-to-home {
+            display: inline-block;
+            margin-top: 30px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-to-home:hover {
+            background-color: #3498db;
+            color: white;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Гласът на коридора</h1>
+                <p>Училищен клуб по журналистика</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Начало</a></li>
+                    <li><a href="index.html#about">За нас</a></li>
+                    <li><a href="index.html#activities">Дейности</a></li>
+                    <li><a href="index.html#publications">Публикации</a></li>
+                    <li><a href="index.html#team">Екип</a></li>
+                    <li><a href="index.html#contact">Контакти</a></li>
+                    <li><a href="rubric.html" class="active">Рубрики</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Rubrics Hero Section -->
+    <section class="rubrics-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>📚 Рубрики</h1>
+                <p>Разгледайте нашите тематични категории. Изберете рубрика, за да видите всички статии по темата.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rubrics Grid Section -->
+    <section class="rubrics-section">
+        <div class="container">
+            <h2 class="section-title">Нашите рубрики</h2>
+            <p class="section-subtitle">Изберете рубрика за да разгледате статиите</p>
+            
+            <div class="rubrics-grid" id="rubricsContainer">
+                <!-- Rubrics will be loaded here dynamically -->
+                <div class="loading-rubrics">
+                    <div class="spinner"></div>
+                    <p>Зареждане на рубрики...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles by Rubric Section -->
+    <section class="rubric-articles-section">
+        <div class="container">
+            <div class="rubric-header" id="rubricHeader" style="display: none;">
+                <h2 id="rubricTitle">Статии в рубрика</h2>
+                <p id="rubricDescription" class="rubric-description"></p>
+                <button id="backToRubrics" class="btn btn-secondary">
+                    ← Назад към всички рубрики
+                </button>
+            </div>
+            
+            <div class="rubric-articles-container">
+                <div class="articles-count" id="articlesCount" style="display: none;">
+                    <span id="articlesCountNumber">0</span> статии
+                </div>
+                
+                <div class="articles-grid" id="rubricArticlesContainer">
+                    <!-- Articles will be loaded here when a rubric is selected -->
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-icon">📚</div>
+                        <h3>Изберете рубрика</h3>
+                        <p>Изберете рубрика отгоре, за да видите статиите в нея</p>
+                    </div>
+                </div>
+                
+                <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+                    <button id="loadMoreBtn" class="btn btn-primary">Зареди още статии</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Клуб "Млад Журналист". Всички права запазени.</p>
+            <a href="index.html" class="back-to-home">← Обратно към началната страница</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="rubric-manager.js"></script>
+    <script>
+        // Add scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simple scroll animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe all rubric cards and articles
+            document.querySelectorAll('.rubric-card, .article-card').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Back button functionality
+            document.getElementById('backToRubrics')?.addEventListener('click', function() {
+                document.getElementById('rubricHeader').style.display = 'none';
+                document.getElementById('rubricArticlesContainer').innerHTML = `
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-icon">📚</div>
+                        <h3>Изберете рубрика</h3>
+                        <p>Изберете рубрика отгоре, за да видите статиите в нея</p>
+                    </div>
+                `;
+                document.getElementById('loadMoreContainer').style.display = 'none';
+                document.getElementById('articlesCount').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

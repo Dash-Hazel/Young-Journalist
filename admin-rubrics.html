@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ - Управление на Рубрики</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <style>
+        :root {
+            --color-recipes: #FF6B6B;
+            --color-interesting: #4ECDC4;
+            --color-jokes: #FFD166;
+        }
+        
+        body { padding-top: 100px; background: #f8f9fa; }
+        .admin-container { max-width: 1200px; margin: 0 auto; }
+        .admin-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 0; margin-bottom: 40px; border-radius: 0 0 20px 20px; }
+        .rubrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin: 30px 0; }
+        .rubric-type-card { background: white; padding: 25px; border-radius: 15px; text-align: center; cursor: pointer; transition: all 0.3s; border: 3px solid transparent; }
+        .rubric-type-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .rubric-type-icon { font-size: 3.5rem; margin-bottom: 15px; }
+        .form-container { background: white; padding: 30px; border-radius: 15px; margin: 30px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .rubrics-list { margin-top: 40px; }
+        .rubric-item { background: white; padding: 20px; margin: 15px 0; border-radius: 10px; border-left: 4px solid; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .stats-card { background: white; padding: 20px; border-radius: 10px; margin: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .back-btn { display: inline-block; margin-bottom: 20px; color: #3498db; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Управление на Рубрики</h1>
+                <p>Забавно съдържание - Рецепти, Интересно, Шеги</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="admin.html">← Назад към основния админ</a></li>
+                    <li><a href="index.html">Към сайта</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="container">
+                <h1 style="margin: 0; color: white;">🎪 Управление на Забавни Рубрики</h1>
+                <p style="opacity: 0.9; font-size: 1.1rem;">
+                    Тук създавайте и управлявайте забавното съдържание, което е отделно от журналистическите статии.
+                </p>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="container">
+            <div id="quickStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px;">
+                <!-- Stats will load here -->
+            </div>
+
+            <!-- Rubric Type Selection -->
+            <div class="form-container">
+                <h2 style="margin-top: 0;">1. Изберете тип рубрика</h2>
+                <p style="color: #7f8c8d; margin-bottom: 25px;">
+                    Изберете в коя рубрика искате да публикувате:
+                </p>
+                
+                <div class="rubrics-grid" id="rubricTypeSelector">
+                    <!-- Cards will be loaded by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Rubric Creation Form -->
+            <div class="form-container" id="rubricFormContainer" style="display: none;">
+                <h2 id="formTitle" style="margin-top: 0;"></h2>
+                
+                <form id="rubricForm">
+                    <input type="hidden" id="rubricType">
+                    
+                    <div class="form-group">
+                        <label for="rubricTitle">Заглавие *</label>
+                        <input type="text" id="rubricTitle" placeholder="Въведете заглавие" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rubricContent">Съдържание *</label>
+                        <textarea id="rubricContent" rows="8" placeholder="Въведете съдържанието..." required></textarea>
+                        <small style="color: #7f8c8d;">За рецепти: опишете стъпките подробно. За шеги: напишете вица.</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rubricAuthor">Автор *</label>
+                        <input type="text" id="rubricAuthor" placeholder="Име на автора" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rubricImage">Снимка (URL)</label>
+                        <input type="url" id="rubricImage" placeholder="https://example.com/image.jpg">
+                        <small style="color: #7f8c8d;">По желание. За рецепти - снимка на ястието.</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rubricTags">Тагове (разделени със запетая)</label>
+                        <input type="text" id="rubricTags" placeholder="пример: десерт, лесно, бързо">
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px; margin-top: 30px;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">
+                            Публикувай в рубриката
+                        </button>
+                        <button type="button" id="cancelBtn" class="btn btn-secondary">
+                            Отказ
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="formMessage" style="margin-top: 20px;"></div>
+            </div>
+
+            <!-- Recent Rubrics -->
+            <div class="rubrics-list">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h2 style="margin: 0;">Последно добавени рубрики</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="refreshBtn" class="btn btn-secondary">🔄 Обнови</button>
+                        <select id="filterType" style="padding: 8px 15px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="all">Всички типове</option>
+                            <option value="recipes">Рецепти</option>
+                            <option value="interesting">Интересно</option>
+                            <option value="jokes">Шеги</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="rubricsList">
+                    <!-- Rubrics will be loaded here -->
+                    <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">📭</div>
+                        Все още няма публикувани рубрики
+                    </div>
+                </div>
+                
+                <div id="loadingMore" style="text-align: center; padding: 20px; display: none;">
+                    <div class="spinner"></div>
+                    <p>Зареждане на още рубрики...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="rubrics-database.js"></script>
+    <script>
+        // ========== ADMIN RUBRICS MANAGER ========== //
+        class AdminRubricsManager {
+            constructor() {
+                this.currentType = null;
+                this.rubrics = [];
+                this.currentPage = 1;
+                this.isLoading = false;
+                
+                this.init();
+            }
+            
+            async init() {
+                // Load rubric types
+                this.loadRubricTypes();
+                
+                // Load statistics
+                this.loadStatistics();
+                
+                // Load recent rubrics
+                this.loadRubrics();
+                
+                // Setup event listeners
+                this.setupEventListeners();
+            }
+            
+            loadRubricTypes() {
+                const types = window.RubricsDB.getAllTypes();
+                const container = document.getElementById('rubricTypeSelector');
+                
+                if (!container) return;
+                
+                container.innerHTML = types.map(type => `
+                    <div class="rubric-type-card" data-type="${type.id}" 
+                         style="border-color: ${type.color};">
+                        <div class="rubric-type-icon">${type.icon}</div>
+                        <h3 style="color: ${type.color}; margin-bottom: 10px;">${type.name}</h3>
+                        <p style="color: #7f8c8d; font-size: 0.95rem;">${type.description}</p>
+                        <button class="btn" style="margin-top: 15px; background: ${type.color}; color: white;">
+                            Добави ${type.name.toLowerCase()}
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            async loadStatistics() {
+                try {
+                    const result = await window.RubricsDB.getStatistics();
+                    
+                    if (result.success) {
+                        this.displayStatistics(result.stats);
+                    }
+                } catch (error) {
+                    console.error('Error loading statistics:', error);
+                }
+            }
+            
+            displayStatistics(stats) {
+                const container = document.getElementById('quickStats');
+                if (!container) return;
+                
+                const types = window.RubricsDB.getAllTypes();
+                
+                container.innerHTML = `
+                    <div class="stats-card">
+                        <div style="font-size: 2.5rem; font-weight: bold; color: #3498db;">${stats.total}</div>
+                        <div style="color: #7f8c8d;">Общо публикации</div>
+                    </div>
+                    
+                    ${types.map(type => `
+                        <div class="stats-card" style="border-left: 4px solid ${type.color};">
+                            <div style="font-size: 2rem; font-weight: bold; color: ${type.color};">
+                                ${stats.byType[type.id] || 0}
+                            </div>
+                            <div style="color: #7f8c8d;">${type.name}</div>
+                        </div>
+                    `).join('')}
+                    
+                    <div class="stats-card">
+                        <div style="font-size: 2rem; font-weight: bold; color: #2ecc71;">${stats.recentCount}</div>
+                        <div style="color: #7f8c8d;">Публикации последната седмица</div>
+                    </div>
+                `;
+            }
+            
+            async loadRubrics() {
+                if (this.isLoading) return;
+                
+                this.isLoading = true;
+                const listContainer = document.getElementById('rubricsList');
+                
+                // Show loading
+                if (listContainer && this.currentPage === 1) {
+                    listContainer.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div class="spinner" style="width: 40px; height: 40px; border: 4px solid #f3f3f3; 
+                                 border-top-color: #3498db; border-radius: 50%; 
+                                 animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                            <p>Зареждане на рубрики...</p>
+                        </div>
+                    `;
+                }
+                
+                try {
+                    const filter = document.getElementById('filterType')?.value || 'all';
+                    let result;
+                    
+                    if (filter === 'all') {
+                        result = await window.RubricsDB.getAllRubrics(this.currentPage * 10);
+                    } else {
+                        result = await window.RubricsDB.getRubricsByType(filter, this.currentPage * 10);
+                    }
+                    
+                    if (result.success) {
+                        this.rubrics = result.rubrics;
+                        this.displayRubrics();
+                    }
+                    
+                } catch (error) {
+                    console.error('Error loading rubrics:', error);
+                    
+                    if (listContainer) {
+                        listContainer.innerHTML = `
+                            <div style="text-align: center; padding: 40px; color: #e74c3c;">
+                                <div style="font-size: 3rem; margin-bottom: 20px;">❌</div>
+                                <p>Грешка при зареждане на рубриките</p>
+                                <button onclick="window.adminRubricsManager.loadRubrics()" class="btn">
+                                    Опитай отново
+                                </button>
+                            </div>
+                        `;
+                    }
+                } finally {
+                    this.isLoading = false;
+                }
+            }
+            
+            displayRubrics() {
+                const container = document.getElementById('rubricsList');
+                if (!container) return;
+                
+                if (this.rubrics.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                            <div style="font-size: 3rem; margin-bottom: 20px;">📭</div>
+                            Все още няма публикувани рубрики
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = this.rubrics.map(rubric => {
+                    const type = window.RubricsDB.getTypeById(rubric.type);
+                    const date = new Date(rubric.date).toLocaleDateString('bg-BG', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    // Truncate content for preview
+                    const preview = rubric.content.length > 150 
+                        ? rubric.content.substring(0, 150) + '...' 
+                        : rubric.content;
+                    
+                    return `
+                        <div class="rubric-item" data-id="${rubric.id}" 
+                             style="border-left-color: ${type?.color || '#3498db'};">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                                <div>
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                                        <span style="font-size: 1.2rem;">${type?.icon || '📄'}</span>
+                                        <h3 style="margin: 0; color: #2c3e50;">${rubric.title}</h3>
+                                        <span style="background: ${type?.color}20; color: ${type?.color}; 
+                                              padding: 3px 10px; border-radius: 20px; font-size: 0.85rem;">
+                                            ${type?.name || 'Рубрика'}
+                                        </span>
+                                    </div>
+                                    <div style="color: #7f8c8d; font-size: 0.9rem;">
+                                        👤 ${rubric.author} | 📅 ${date}
+                                    </div>
+                                </div>
+                                <button onclick="window.adminRubricsManager.deleteRubric('${rubric.id}')" 
+                                        style="background: none; border: none; color: #e74c3c; 
+                                               cursor: pointer; font-size: 1.2rem;" title="Изтрий">
+                                    🗑️
+                                </button>
+                            </div>
+                            
+                            <div style="color: #5d6d7e; margin-bottom: 15px; line-height: 1.5;">
+                                ${preview}
+                            </div>
+                            
+                            ${rubric.imageUrl ? `
+                            <div style="margin: 15px 0;">
+                                <img src="${rubric.imageUrl}" alt="${rubric.title}" 
+                                     style="max-width: 200px; border-radius: 8px;">
+                            </div>
+                            ` : ''}
+                            
+                            ${rubric.tags ? `
+                            <div style="margin-top: 15px;">
+                                ${rubric.tags.split(',').map(tag => 
+                                    `<span style="background: #f0f0f0; padding: 3px 8px; 
+                                          border-radius: 4px; margin-right: 5px; 
+                                          font-size: 0.85rem; color: #7f8c8d;">
+                                        #${tag.trim()}
+                                    </span>`
+                                ).join('')}
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            setupEventListeners() {
+                // Rubric type selection
+                document.querySelectorAll('.rubric-type-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        const type = card.dataset.type;
+                        this.showRubricForm(type);
+                    });
+                });
+                
+                // Form submission
+                document.getElementById('rubricForm')?.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveRubric();
+                });
+                
+                // Cancel button
+                document.getElementById('cancelBtn')?.addEventListener('click', () => {
+                    this.hideRubricForm();
+                });
+                
+                // Filter change
+                document.getElementById('filterType')?.addEventListener('change', () => {
+                    this.currentPage = 1;
+                    this.loadRubrics();
+                });
+                
+                // Refresh button
+                document.getElementById('refreshBtn')?.addEventListener('click', () => {
+                    this.currentPage = 1;
+                    this.loadRubrics();
+                    this.loadStatistics();
+                });
+            }
+            
+            showRubricForm(type) {
+                this.currentType = type;
+                const typeInfo = window.RubricsDB.getTypeById(type);
+                
+                if (!typeInfo) return;
+                
+                // Update form title
+                document.getElementById('formTitle').textContent = `Добавяне на ${typeInfo.name.toLowerCase()}`;
+                document.getElementById('rubricType').value = type;
+                
+                // Set form accent color
+                const form = document.getElementById('rubricFormContainer');
+                form.style.borderTop = `4px solid ${typeInfo.color}`;
+                
+                // Show form
+                form.style.display = 'block';
+                
+                // Scroll to form
+                form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            hideRubricForm() {
+                document.getElementById('rubricFormContainer').style.display = 'none';
+                document.getElementById('rubricForm').reset();
+                document.getElementById('formMessage').innerHTML = '';
+                this.currentType = null;
+            }
+            
+            async saveRubric() {
+                const type = document.getElementById('rubricType').value;
+                const title = document.getElementById('rubricTitle').value.trim();
+                const content = document.getElementById('rubricContent').value.trim();
+                const author = document.getElementById('rubricAuthor').value.trim();
+                const imageUrl = document.getElementById('rubricImage').value.trim();
+                const tags = document.getElementById('rubricTags').value.trim();
+                
+                if (!title || !content || !author) {
+                    this.showFormMessage('Моля, попълнете всички задължителни полета', 'error');
+                    return;
+                }
+                
+                const rubricData = {
+                    type: type,
+                    title: title,
+                    content: content,
+                    author: author
+                };
+                
+                // Add optional fields if provided
+                if (imageUrl) rubricData.imageUrl = imageUrl;
+                if (tags) rubricData.tags = tags;
+                
+                const submitBtn = document.querySelector('#rubricForm button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Запазване...';
+                submitBtn.disabled = true;
+                
+                try {
+                    const result = await window.RubricsDB.createRubric(rubricData);
+                    
+                    if (result.success) {
+                        this.showFormMessage(`✅ ${result.message}`, 'success');
+                        document.getElementById('rubricForm').reset();
+                        
+                        // Reload lists
+                        setTimeout(() => {
+                            this.loadRubrics();
+                            this.loadStatistics();
+                            this.hideRubricForm();
+                        }, 1500);
+                        
+                    } else {
+                        this.showFormMessage(`❌ ${result.error}`, 'error');
+                    }
+                    
+                } catch (error) {
+                    this.showFormMessage(`❌ Грешка: ${error.message}`, 'error');
+                } finally {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
+            
+            async deleteRubric(rubricId) {
+                if (!confirm('Сигурни ли сте, че искате да изтриете тази рубрика?')) {
+                    return;
+                }
+                
+                try {
+                    const result = await window.RubricsDB.deleteRubric(rubricId);
+                    
+                    if (result.success) {
+                        // Remove from UI
+                        const rubricElement = document.querySelector(`[data-id="${rubricId}"]`);
+                        if (rubricElement) {
+                            rubricElement.style.opacity = '0.5';
+                            rubricElement.style.transition = 'opacity 0.3s';
+                            setTimeout(() => rubricElement.remove(), 300);
+                        }
+                        
+                        // Reload statistics
+                        this.loadStatistics();
+                        
+                    } else {
+                        alert(`Грешка при изтриване: ${result.error}`);
+                    }
+                    
+                } catch (error) {
+                    alert(`Грешка: ${error.message}`);
+                }
+            }
+            
+            showFormMessage(message, type) {
+                const container = document.getElementById('formMessage');
+                container.innerHTML = `
+                    <div style="padding: 15px; background: ${type === 'success' ? '#d4edda' : '#f8d7da'}; 
+                          color: ${type === 'success' ? '#155724' : '#721c24'}; 
+                          border: 1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'};
+                          border-radius: 8px;">
+                        ${message}
+                    </div>
+                `;
+                
+                // Auto-hide success messages
+                if (type === 'success') {
+                    setTimeout(() => {
+                        container.innerHTML = '';
+                    }, 3000);
+                }
+            }
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            window.adminRubricsManager = new AdminRubricsManager();
+            
+            // Add CSS for spinner animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+                .btn-primary { background: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; }
+                .btn-secondary { background: #f8f9fa; color: #2c3e50; border: 1px solid #ddd; padding: 12px 25px; border-radius: 8px; cursor: pointer; }
+                .form-group { margin-bottom: 20px; }
+                .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
+                .form-group input, .form-group textarea, .form-group select { 
+                    width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; 
+                    font-family: inherit; font-size: 1rem; 
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
