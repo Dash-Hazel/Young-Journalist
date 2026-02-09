@@ -34,3 +34,15 @@ window.db = db;
 // Add this at the bottom of firebase-config.js
 const GEMINI_API_KEY = 'AIzaSyCjG8z3vbhFOM9hlqfUf2Ug7H4dGwY1sgI'; // Replace with your key
 window.GEMINI_API_KEY = GEMINI_API_KEY;
+
+// ... existing firebase config ...
+
+// Rubric types (separate from articles)
+const RUBRIC_TYPES = {
+    RECIPES: 'recipes',
+    INTERESTING: 'interesting',
+    JOKES: 'jokes'
+};
+
+// Make globally available
+window.RUBRIC_TYPES = RUBRIC_TYPES;
