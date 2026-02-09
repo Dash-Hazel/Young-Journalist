@@ -141,16 +141,18 @@
                 <p>Училищен клуб по журналистика</p>
             </div>
             <nav>
-                <ul>
-                    <li><a href="#home">Начало</a></li>
-                    <li><a href="#about">За нас</a></li>
-                    <li><a href="#activities">Дейности</a></li>
-                    <li><a href="#publications">Публикации</a></li>
-                    <li><a href="#team">Екип</a></li>
-                    <li><a href="#contact">Контакти</a></li>
-                    <li><a href="rubric.html">Предстоящо</a></li>
-                </ul>
-            </nav>
+    <ul>
+        <li><a href="#home">Начало</a></li>
+        <li><a href="#about">За нас</a></li>
+        <li><a href="#activities">Дейности</a></li>
+        <li><a href="#publications">Статии</a></li>  <!-- Changed text from "Публикации" to "Статии" -->
+        <li><a href="rubrics-public.html">🎪 Забавни рубрики</a></li>  <!-- NEW -->
+        <li><a href="#team">Екип</a></li>
+        <li><a href="#contact">Контакти</a></li>
+        <li><a href="calendar.html">📅 Календар</a></li>
+        <!-- Removed "Предстоящо" if not needed -->
+    </ul>
+</nav>
         </div>
     </header>
 
@@ -235,6 +237,20 @@
                 <!-- Articles will load here automatically from Firebase -->
             </div>
         </div>
+
+    <!-- Link to Rubrics Page -->
+<div class="rubrics-link-section" style="text-align: center; padding: 40px 0; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); margin-top: 60px; border-radius: 15px;">
+    <div class="container">
+        <h3 style="color: #2c3e50; margin-bottom: 15px;">🎪 Искате нещо по-леко и забавно?</h3>
+        <p style="color: #7f8c8d; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Посетете нашите специални рубрики с рецепти, интересни факти и шеги!
+        </p>
+        <a href="rubrics-public.html" class="btn" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 50px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px;">
+            <span>🎪</span>
+            Към забавните рубрики
+        </a>
+    </div>
+</div>
     </section>
 
     <!-- Newspaper Modal -->
@@ -469,11 +485,20 @@
     </section>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 Клуб "Млад Журналист". Всички права запазени.</p>
+   <footer>
+    <div class="container">
+        <p>&copy; 2023 Клуб "Млад Журналист". Всички права запазени.</p>
+        <div style="margin-top: 15px;">
+            <a href="rubrics-public.html" style="color: #3498db; text-decoration: none; font-weight: 600;">
+                🎪 Забавни рубрики
+            </a>
+            |
+            <a href="index.html#publications" style="color: #3498db; text-decoration: none; font-weight: 600;">
+                📰 Журналистически статии
+            </a>
         </div>
-    </footer>
+    </div>
+</footer>
 
   
     
@@ -668,6 +693,31 @@ window.addEventListener('load', function() {
     // Вече не се нуждаем от fade-in за цялото body
     // Header вече е фиксиран и видим от началото
 });
+
+// Highlight current page in navigation
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname;
+    const navLinks = document.querySelectorAll('nav a');
+    
+    navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+            link.classList.add('active');
+        }
+    });
+    
+    // Add animation to rubrics link
+    const rubricsLink = document.querySelector('a[href="rubrics-public.html"]');
+    if (rubricsLink) {
+        rubricsLink.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05) rotate(2deg)';
+        });
+        
+        rubricsLink.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0)';
+        });
+    }
+});
+
 </script>
 
 
