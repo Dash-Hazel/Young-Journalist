@@ -177,12 +177,16 @@ function displayArticles(articles, searchTerm = '', showImages = true) {
 
 
 // Helper functions
+// Modify getCategoryName function in articles-list.js
 function getCategoryName(category) {
     const categories = {
         'news': 'Новини',
         'interview': 'Интервю',
         'opinion': 'Мнение',
-        'culture': 'Култура'
+        'culture': 'Култура',
+        'recipes': 'Рецепти',        // NEW
+        'interesting': 'Интересно',  // NEW
+        'jokes': 'Шеги'              // NEW
     };
     return categories[category] || category;
 }
@@ -851,4 +855,108 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
 });
 
+// ========== ADD TO articles-list.js ========== //
 
+// Add rubric support to getCategoryName function
+function getCategoryName(category) {
+    const categories = {
+        'news': 'Новини',
+        'interview': 'Интервю',
+        'opinion': 'Мнение',
+        'culture': 'Култура',
+        'recipes': 'Рецепти',        // NEW
+        'interesting': 'Интересно',  // NEW
+        'jokes': 'Шеги'              // NEW
+    };
+    return categories[category] || category;
+}
+
+// Function to filter articles by rubric (add to your existing code)
+function filterArticlesByRubric(rubricId) {
+    const filteredArticles = allArticles.filter(article => {
+        // Check both category and rubric fields
+        return article.rubric === rubricId || article.category === rubricId;
+    });
+    
+    // Display filtered articles (with thumbnails for consistency)
+    displayArticles(filteredArticles, '', false);
+    
+    // Update search info
+    const resultsInfo = document.getElementById('searchResultsInfo');
+    const rubricNames = {
+        'recipes': 'Рецепти',
+        'interesting': 'Интересно',
+        'jokes': 'Шеги'
+    };
+    
+    if (resultsInfo && rubricNames[rubricId]) {
+        resultsInfo.textContent = `Показване на статии в рубрика "${rubricNames[rubricId]}"`;
+    }
+}
+
+// Add rubric buttons to your main page (optional)
+// You can call this function after loading articles
+function addRubricFiltersToMainPage() {
+    const publicationsSection = document.querySelector('#publications .container');
+    if (!publicationsSection) return;
+    
+    // Create rubric filter buttons
+    const rubricFilterHTML = `
+        <div class="rubric-filters" style="margin: 20px 0;">
+            <h3 style="margin-bottom: 10px; font-size: 1.1rem; color: #2c3e50;">Филтрирай по рубрика:</h3>
+            <div class="rubric-filter-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="rubric-filter-btn active" data-rubric="all">Всички</button>
+                <button class="rubric-filter-btn" data-rubric="recipes">Рецепти</button>
+                <button class="rubric-filter-btn" data-rubric="interesting">Интересно</button>
+                <button class="rubric-filter-btn" data-rubric="jokes">Шеги</button>
+                <button class="rubric-filter-btn" data-rubric="news">Новини</button>
+                <button class="rubric-filter-btn" data-rubric="interview">Интервю</button>
+                <button class="rubric-filter-btn" data-rubric="opinion">Мнение</button>
+                <button class="rubric-filter-btn" data-rubric="culture">Култура</button>
+            </div>
+        </div>
+    `;
+    
+    // Insert after the search container
+    const searchContainer = publicationsSection.querySelector('.search-container');
+    if (searchContainer) {
+        searchContainer.insertAdjacentHTML('afterend', rubricFilterHTML);
+        
+        // Add event listeners
+        publicationsSection.querySelectorAll('.rubric-filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const rubric = this.dataset.rubric;
+                
+                // Update active button
+                publicationsSection.querySelectorAll('.rubric-filter-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Filter articles
+                if (rubric === 'all') {
+                    displayArticles(initialArticles, '', true);
+                } else {
+                    filterArticlesByRubric(rubric);
+                }
+            });
+        });
+    }
+}
+
+// Call this function after loadAllArticles() in your DOMContentLoaded event:
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+    
+    setTimeout(() => {
+        console.log('Starting initialization...');
+        loadAllArticles();
+        setupSearch();
+        setupSearchSuggestions();
+        setupNewspaperControls();
+        
+        // ADD THIS LINE:
+        addRubricFiltersToMainPage(); // Add rubric filters to main page
+        
+    }, 100);
+});
