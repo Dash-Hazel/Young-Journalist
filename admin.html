@@ -27,6 +27,15 @@
                     <li><a href="index.html">← Назад към сайта</a></li>
                 </ul>
             </nav>
+
+            <!-- In your admin.html navigation, add this link: -->
+<nav>
+    <ul>
+        <li><a href="index.html">← Назад към сайта</a></li>
+        <li><a href="admin-rubrics.html">🎪 Управление на рубрики</a></li>
+    </ul>
+</nav>
+
         </div>
     </header>
 
@@ -316,5 +325,9 @@
         // Load events when page loads
         document.addEventListener('DOMContentLoaded', loadEvents);
     </script>
+
+    <!-- Add after your existing scripts -->
+<script src="admin-rubric-integration.js"></script>
+
 </body>
 </html>
